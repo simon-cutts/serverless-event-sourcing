@@ -2,8 +2,8 @@ package com.sighware.customer.command;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.sighware.customer.error.CustomerNotFoundException;
-import com.sighware.customer.model.Customer;
 import com.sighware.customer.event.CustomerEvent;
+import com.sighware.customer.model.Customer;
 import com.sighware.customer.query.CustomerQuery;
 import com.sighware.customer.query.EventQuery;
 

@@ -1,14 +1,14 @@
 package com.sighware.customer.command;
 
 
+import com.sighware.customer.error.CustomerNotFoundException;
 import com.sighware.customer.event.*;
 import com.sighware.customer.model.Customer;
 import com.sighware.customer.model.CustomerBuilder;
-import com.sighware.customer.util.DynamoDBAdapter;
-import org.junit.Test;
-import com.sighware.customer.error.CustomerNotFoundException;
 import com.sighware.customer.model.OrganisationCustomer;
 import com.sighware.customer.model.PersonCustomer;
+import com.sighware.customer.util.DynamoDBAdapter;
+import org.junit.Test;
 
 import java.time.ZonedDateTime;
 
@@ -107,7 +107,7 @@ public class CustomerRebuildCommandTest {
     }
 
     @Test
-    public void testDateToEarly() throws Exception {
+    public void testDateToEarly() {
         OrganisationCustomer customer = CustomerBuilder.buildOrganistion();
 
         CustomerEvent event = new OrganisationCustomerCreatedEvent(customer);

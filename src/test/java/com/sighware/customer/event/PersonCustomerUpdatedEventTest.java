@@ -2,14 +2,14 @@ package com.sighware.customer.event;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sighware.customer.command.CustomerCreateCommand;
+import com.sighware.customer.command.CustomerUpdateCommand;
 import com.sighware.customer.error.CustomerNotFoundException;
 import com.sighware.customer.model.CustomerBuilder;
+import com.sighware.customer.model.PersonCustomer;
 import com.sighware.customer.util.DynamoDBAdapter;
 import org.junit.Assert;
 import org.junit.Test;
-import com.sighware.customer.command.CustomerCreateCommand;
-import com.sighware.customer.command.CustomerUpdateCommand;
-import com.sighware.customer.model.PersonCustomer;
 
 public class PersonCustomerUpdatedEventTest {
 

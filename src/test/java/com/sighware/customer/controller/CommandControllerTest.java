@@ -2,10 +2,10 @@ package com.sighware.customer.controller;
 
 import com.sighware.customer.model.Customer;
 import com.sighware.customer.model.CustomerBuilder;
+import com.sighware.customer.model.RebuildRequest;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.sighware.customer.model.RebuildRequest;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

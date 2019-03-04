@@ -1,8 +1,8 @@
 package com.sighware.customer.command;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.sighware.customer.model.Customer;
 import com.sighware.customer.event.CustomerEvent;
+import com.sighware.customer.model.Customer;
 
 /**
  * Customer create command to handle the persistence of both the Event and its payload.

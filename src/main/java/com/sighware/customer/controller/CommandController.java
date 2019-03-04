@@ -7,18 +7,18 @@ import com.sighware.customer.command.CustomerRebuildCommand;
 import com.sighware.customer.command.CustomerUpdateCommand;
 import com.sighware.customer.error.CustomerNotFoundException;
 import com.sighware.customer.event.CustomerDeleteEvent;
+import com.sighware.customer.event.OrganisationCustomerCreatedEvent;
+import com.sighware.customer.event.PersonCustomerCreatedEvent;
+import com.sighware.customer.event.PersonCustomerUpdatedEvent;
 import com.sighware.customer.model.Customer;
+import com.sighware.customer.model.OrganisationCustomer;
+import com.sighware.customer.model.PersonCustomer;
+import com.sighware.customer.model.RebuildRequest;
 import com.sighware.customer.util.DynamoDBAdapter;
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import com.sighware.customer.event.OrganisationCustomerCreatedEvent;
-import com.sighware.customer.event.PersonCustomerCreatedEvent;
-import com.sighware.customer.event.PersonCustomerUpdatedEvent;
-import com.sighware.customer.model.OrganisationCustomer;
-import com.sighware.customer.model.PersonCustomer;
-import com.sighware.customer.model.RebuildRequest;
 
 import java.time.ZonedDateTime;
 

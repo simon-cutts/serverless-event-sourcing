@@ -3,8 +3,8 @@ package com.sighware.customer.query;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import org.apache.log4j.Logger;
 import com.sighware.customer.event.CustomerEvent;
+import org.apache.log4j.Logger;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -26,7 +26,24 @@ public class EventQuery {
     private ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
     private String customerId;
 
+    /**
+     * Create an instance of EventQuery with an endTime of now
+     *
+     * @param mapper
+     * @param customerId
+     */
+    public EventQuery(DynamoDBMapper mapper, String customerId) {
+        this.mapper = mapper;
+        this.customerId = customerId;
+    }
 
+    /**
+     * Create an instance of EventQuery for a specified endTime
+     *
+     * @param mapper
+     * @param endTime
+     * @param customerId
+     */
     public EventQuery(DynamoDBMapper mapper, ZonedDateTime endTime, String customerId) {
         this.mapper = mapper;
         this.endTime = endTime;

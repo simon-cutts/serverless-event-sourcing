@@ -8,7 +8,7 @@ The app deviates from true event sourcing in these areas:
 2. The app supports transactional concurrency, with an optimistic locking strategy
 2. Allows deletes, so that customers can be forgotten 
 
-###Outstanding Tasks
+##Outstanding Tasks
 
 Stuff for the next iteration:
 
@@ -102,7 +102,7 @@ At any time, you may delete the stack
 $ aws cloudformation delete-stack --stack-name <YOUR STACK NAME>
 ```
 
-Create a customer, you may use the `customerId` output from the curl command below for future commands
+Create a customer, you may use the `customerId` output from the curl command below for future commands in the `{customerId}` variable
 
 ```
 $ curl -H "Content-Type: application/json" -X POST https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/command/createPerson -d '
@@ -129,6 +129,11 @@ Retrieve a customer
 
 ```
 $ curl https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/query/get/{customerId}
+```
+Get all the immutable events for a customer
+
+```
+$ curl https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/query/event/{customerId}
 ```
 
 Rebuild a customer from the event stream, with an example message body

@@ -4,10 +4,10 @@ package com.sighware.customer.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sighware.customer.command.CustomerCreateCommand;
 import com.sighware.customer.model.CustomerBuilder;
+import com.sighware.customer.model.OrganisationCustomer;
 import com.sighware.customer.util.DynamoDBAdapter;
 import org.junit.Assert;
 import org.junit.Test;
-import com.sighware.customer.model.OrganisationCustomer;
 
 public class OrganisationCustomerCreatedEventTest {
 
