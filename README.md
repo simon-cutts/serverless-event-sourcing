@@ -4,11 +4,11 @@ This application is intended as a straw man to demonstrate the benefits of an ev
 
 The app deviates from true event sourcing in these areas:
 
-1. No separate read and write models (i.e. no [CQRS](https://martinfowler.com/bliki/CQRS.html)). The view of the customer is always up to date because events do not need to be re-played. Consequentially, there is no eventual consistency lag.
+1. No separate read and write models (i.e. no [CQRS](https://martinfowler.com/bliki/CQRS.html)). The view of the customer is always up to date so events do not need to be re-played (unless you want to); consequentially, there is no eventual consistency lag.
 2. The app supports transactional concurrency, with an optimistic locking strategy
 2. Allows deletes, so that customers can be forgotten 
 
-##Outstanding Tasks
+### Outstanding Tasks
 
 Stuff for the next iteration:
 
