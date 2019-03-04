@@ -11,7 +11,7 @@ Resources:
   CustomerRecordFunc:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: uk.gov.dvla.osl.customer.StreamLambdaHandler::handleRequest
+      Handler: com.sighware.customer.StreamLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: build/distributions/customer-record.zip
       MemorySize: 1024
