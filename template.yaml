@@ -13,7 +13,7 @@ Resources:
     Properties:
       Handler: com.sighware.customer.StreamLambdaHandler::handleRequest
       Runtime: java8
-      CodeUri: build/distributions/customer-record.zip
+      CodeUri: build/distributions/customer-record-event-strawman.zip
       MemorySize: 1024
       Policies:
         - AWSLambdaBasicExecutionRole
