@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: customer-record written with aws-serverless-java-container spring boot
+
+Globals:
+  Api:
+    # API Gateway regional endpoints
+    EndpointConfiguration: REGIONAL
+
+Resources:
+  CustomerRecordFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: uk.gov.dvla.osl.customer.StreamLambdaHandler::handleRequest
+      Runtime: java8
+      CodeUri: build/distributions/customer-record.zip
+      MemorySize: 1024
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CustomersDynamoDBTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsDynamoDBTable
+      Timeout: 60
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+
+  CustomersDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "customerId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "customerId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: "Customer"
+
+  EventsDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "customerId"
+          AttributeType: "S"
+        - AttributeName: "createTime"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "customerId"
+          KeyType: "HASH"
+        - AttributeName: "createTime"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: "CustomerEvent"
+
+Outputs:
+  CustomerRecordFuncApi:
+    Description: URL for application
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/customer'
+    Export:
+      Name: CustomerRecordFuncApi
