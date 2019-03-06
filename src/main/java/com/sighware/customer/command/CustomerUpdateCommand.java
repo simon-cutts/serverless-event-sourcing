@@ -16,9 +16,9 @@ public class CustomerUpdateCommand {
 
     private static final Logger LOG = Logger.getLogger(CustomerUpdateCommand.class);
 
-    private DynamoDBMapper mapper;
+    private final DynamoDBMapper mapper;
 
-    private CustomerEvent customerEvent;
+    private final CustomerEvent customerEvent;
 
     public CustomerUpdateCommand(CustomerEvent customerEvent, DynamoDBMapper mapper) {
         this.customerEvent = customerEvent;

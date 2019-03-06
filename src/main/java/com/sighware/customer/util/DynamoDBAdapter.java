@@ -14,8 +14,8 @@ public class DynamoDBAdapter {
 
     private static DynamoDBAdapter self = null;
     private final AmazonDynamoDB client;
-    private DynamoDBMapper mapper;
-    private DynamoDB dynamoDB;
+    private final DynamoDBMapper mapper;
+    private final DynamoDB dynamoDB;
 
 
     private DynamoDBAdapter() {

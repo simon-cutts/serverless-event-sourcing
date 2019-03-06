@@ -30,7 +30,7 @@ public class QueryController {
 
     private static final Logger LOG = Logger.getLogger(QueryController.class);
 
-    private DynamoDBMapper mapper = DynamoDBAdapter.getInstance().getDynamoDBMapper();
+    private final DynamoDBMapper mapper = DynamoDBAdapter.getInstance().getDynamoDBMapper();
 
     /**
      * Get a customer

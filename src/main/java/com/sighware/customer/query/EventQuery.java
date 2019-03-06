@@ -22,9 +22,9 @@ public class EventQuery {
 
     private static final Logger LOG = Logger.getLogger(EventQuery.class);
     private final ZonedDateTime startTime = ZonedDateTime.parse("1900-01-01T00:00:01.000Z");
-    private DynamoDBMapper mapper;
+    private final DynamoDBMapper mapper;
     private ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
-    private String customerId;
+    private final String customerId;
 
     /**
      * Create an instance of EventQuery with an endTime of now
@@ -66,8 +66,7 @@ public class EventQuery {
                 .withExpressionAttributeValues(eav);
 
         LOG.info("Query customer events with customerId " + customerId);
-        List<CustomerEvent> events = mapper.query(CustomerEvent.class, queryExpression);
 
-        return events;
+        return mapper.query(CustomerEvent.class, queryExpression);
     }
 }

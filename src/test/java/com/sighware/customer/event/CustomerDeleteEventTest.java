@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class CustomerDeleteEventTest {
 
-    private static DynamoDBAdapter adapter = DynamoDBAdapter.getInstance();
+    private static final DynamoDBAdapter adapter = DynamoDBAdapter.getInstance();
 
     @Test
     public void testDeleteEvent() {

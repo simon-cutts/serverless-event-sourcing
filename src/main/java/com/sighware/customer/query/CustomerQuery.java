@@ -17,9 +17,9 @@ public class CustomerQuery {
 
     private static final Logger LOG = Logger.getLogger(CustomerQuery.class);
 
-    private DynamoDBMapper mapper;
+    private final DynamoDBMapper mapper;
 
-    private String customerId;
+    private final String customerId;
 
     public CustomerQuery(String customerId, DynamoDBMapper mapper) {
         this.customerId = customerId;
@@ -31,7 +31,7 @@ public class CustomerQuery {
      */
     public Customer get() throws CustomerNotFoundException {
 
-        Customer customer = null;
+        Customer customer;
         try {
             customer = mapper.load(PersonCustomer.class, customerId);
         } catch (DynamoDBMappingException e) {

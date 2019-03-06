@@ -1,7 +1,7 @@
 package com.sighware.customer.util;
 
 public class Alive {
-    private boolean isAlive = false;
+    private boolean isAlive;
 
     public Alive(boolean isAlive) {
         this.isAlive = isAlive;

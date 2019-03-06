@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class PersonCustomerCreatedEvent extends CustomerEvent {
 
-    private PersonCustomer personCustomer;
+    private final PersonCustomer personCustomer;
 
     public PersonCustomerCreatedEvent(PersonCustomer personCustomer) {
         super("PersonCustomerCreatedEvent", personCustomer.getCustomerId());

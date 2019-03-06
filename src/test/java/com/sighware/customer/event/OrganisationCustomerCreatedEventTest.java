@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class OrganisationCustomerCreatedEventTest {
 
-    private static DynamoDBAdapter adapter = DynamoDBAdapter.getInstance();
+    private static final DynamoDBAdapter adapter = DynamoDBAdapter.getInstance();
 
     @Test
     public void testOrgCreatedEvent() throws Exception {
@@ -26,7 +26,6 @@ public class OrganisationCustomerCreatedEventTest {
         // now retrieve the saved item
         OrganisationCustomer cust = adapter.getDynamoDBMapper().load(OrganisationCustomer.class, customer.getCustomerId());
         String result = new ObjectMapper().writeValueAsString(cust);
-//        System.out.println(result);
 
         Assert.assertTrue(result.startsWith("{\"customerId\":\"" + customer.getCustomerId() + "\",\"organisationName\":\"My Organisation\""));
         Assert.assertTrue(result.endsWith("\"addressLine2\":\"addressLine2\",\"addressLine3\":\"addressLine3\",\"postalCode\":\"SA14FR\"}},\"version\":1}"));

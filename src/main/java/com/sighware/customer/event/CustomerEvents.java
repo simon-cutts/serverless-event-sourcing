@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CustomerEvents {
 
-    private List<CustomerEvent> events;
+    private final List<CustomerEvent> events;
 
     public CustomerEvents(List<CustomerEvent> events) {
         this.events = events;

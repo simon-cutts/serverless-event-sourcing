@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +19,7 @@ public class QueryControllerTest {
 
     private static Customer customer;
     private static Customer orgCustomer;
-    QueryController controller = new QueryController();
+    private final QueryController controller = new QueryController();
 
     @BeforeClass
     public static void setup() {
@@ -65,7 +65,7 @@ public class QueryControllerTest {
         new CommandController().updatePersonCustomer(PersonCustomer.convert(customer));
 
         ResponseEntity<CustomerEvents> r = controller.getEvents(customer.getCustomerId());
-        CustomerEvent event = r.getBody().getEvents().get(0);
+        CustomerEvent event = Objects.requireNonNull(r.getBody()).getEvents().get(0);
         assertEquals("PersonCustomerCreatedEvent", event.getEventName());
         event = r.getBody().getEvents().get(1);
         assertEquals("PersonCustomerUpdatedEvent", event.getEventName());

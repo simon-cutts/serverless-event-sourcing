@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 
 /**
- * Parent Customer entity, needed so that the Customer can be persisted as part of an Event
+ * Parent Customer entity, needed so that the Customer can be persisted as part of a CustomerEvent
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @DynamoDBDocument

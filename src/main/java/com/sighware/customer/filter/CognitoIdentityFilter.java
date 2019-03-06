@@ -19,11 +19,10 @@ import java.io.IOException;
 public class CognitoIdentityFilter implements Filter {
     public static final String COGNITO_IDENTITY_ATTRIBUTE = "com.amazonaws.serverless.cognitoId";
 
-    private static Logger log = LoggerFactory.getLogger(CognitoIdentityFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(CognitoIdentityFilter.class);
 
     @Override
-    public void init(FilterConfig filterConfig)
-            throws ServletException {
+    public void init(FilterConfig filterConfig) {
         // nothing to do in init
     }
 

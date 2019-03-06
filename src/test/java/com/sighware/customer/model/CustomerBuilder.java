@@ -17,10 +17,9 @@ public class CustomerBuilder {
                 "Glyn Dŵr");
 
         // create the customer object for post
-        PersonCustomer personCustomer = new PersonCustomer(null,
+        return new PersonCustomer(null,
                 name,
                 custAddr);
-        return personCustomer;
     }
 
     public static OrganisationCustomer buildOrganistion() {
@@ -33,11 +32,10 @@ public class CustomerBuilder {
                 "SA14FR");
 
         // create the customer object for post
-        OrganisationCustomer customer = new OrganisationCustomer(null,
+
+        return new OrganisationCustomer(null,
                 "My Organisation",
                 custAddr);
-
-        return customer;
     }
 
 }

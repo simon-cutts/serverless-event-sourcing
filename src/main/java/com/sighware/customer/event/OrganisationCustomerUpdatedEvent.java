@@ -6,7 +6,7 @@ import com.sighware.customer.model.OrganisationCustomer;
 
 public class OrganisationCustomerUpdatedEvent extends CustomerEvent {
 
-    private OrganisationCustomer organisationCustomer;
+    private final OrganisationCustomer organisationCustomer;
 
     public OrganisationCustomerUpdatedEvent(OrganisationCustomer organisationCustomer) {
         super("OrganisationCustomerUpdatedEvent", organisationCustomer.getCustomerId());

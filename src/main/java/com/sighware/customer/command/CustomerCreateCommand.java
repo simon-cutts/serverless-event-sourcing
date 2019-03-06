@@ -11,9 +11,9 @@ import com.sighware.customer.model.Customer;
  */
 public class CustomerCreateCommand {
 
-    private DynamoDBMapper mapper;
+    private final DynamoDBMapper mapper;
 
-    private CustomerEvent customerEvent;
+    private final CustomerEvent customerEvent;
 
     public CustomerCreateCommand(CustomerEvent customerEvent, DynamoDBMapper mapper) {
         this.customerEvent = customerEvent;

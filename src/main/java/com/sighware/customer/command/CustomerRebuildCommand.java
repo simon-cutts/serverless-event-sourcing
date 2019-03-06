@@ -28,9 +28,9 @@ public class CustomerRebuildCommand {
 
     private static final String startTime = "1900-01-01T00:00:01.000Z";
 
-    private DynamoDBMapper mapper;
-    private String customerId;
-    private String endTime;
+    private final DynamoDBMapper mapper;
+    private final String customerId;
+    private final String endTime;
 
     /**
      * Rebuild a customer from before and up unto the timestamp
@@ -70,7 +70,7 @@ public class CustomerRebuildCommand {
 
         // Create the target Customer and collect the different versions of the customer from the events
         Customer customer = null;
-        List<Customer> customerVersions = new ArrayList<Customer>();
+        List<Customer> customerVersions = new ArrayList<>();
         for (CustomerEvent event : events) {
 
             if (customer == null) {

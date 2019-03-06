@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class PersonCustomerUpdatedEventTest {
 
-    private static DynamoDBAdapter adapter = DynamoDBAdapter.getInstance();
+    private static final DynamoDBAdapter adapter = DynamoDBAdapter.getInstance();
 
     @Test
     public void testPersonAmendEvent() throws Exception {
@@ -34,7 +34,6 @@ public class PersonCustomerUpdatedEventTest {
         // now retrieve the updated item
         PersonCustomer cust = adapter.getDynamoDBMapper().load(PersonCustomer.class, updateCust.getCustomerId());
         String result = new ObjectMapper().writeValueAsString(cust);
-//        System.out.println(result);
 
         // Confirm version is now 2
         Assert.assertTrue(result.startsWith("{\"customerId\":\"" + cust.getCustomerId()

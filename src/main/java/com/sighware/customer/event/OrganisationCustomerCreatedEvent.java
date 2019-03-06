@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class OrganisationCustomerCreatedEvent extends CustomerEvent {
 
-    private OrganisationCustomer orgCustomer;
+    private final OrganisationCustomer orgCustomer;
 
     public OrganisationCustomerCreatedEvent(OrganisationCustomer orgCustomer) {
         super("OrganisationCustomerCreatedEvent", orgCustomer.getCustomerId());

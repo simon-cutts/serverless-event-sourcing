@@ -3,6 +3,9 @@ package com.sighware.customer.model;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Container classs to hold the parameter for a rebuild request
+ */
 public class RebuildRequest {
     private String customerId;
     private String timestamp;

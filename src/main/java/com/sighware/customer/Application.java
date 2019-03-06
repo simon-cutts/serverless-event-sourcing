@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @SpringBootApplication
-@Import({CommandController.class})
+@Import({CommandController.class}) //TODO: Is this needed?
 public class Application extends SpringBootServletInitializer {
 
     // silence console logging

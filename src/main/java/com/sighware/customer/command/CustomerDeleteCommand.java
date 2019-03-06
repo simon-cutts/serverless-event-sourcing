@@ -19,9 +19,9 @@ import java.util.List;
  */
 public class CustomerDeleteCommand {
 
-    private DynamoDBMapper mapper;
+    private final DynamoDBMapper mapper;
 
-    private CustomerEvent customerEvent;
+    private final CustomerEvent customerEvent;
 
     public CustomerDeleteCommand(CustomerEvent customerEvent, DynamoDBMapper mapper) {
         this.customerEvent = customerEvent;
@@ -32,7 +32,7 @@ public class CustomerDeleteCommand {
      * Persist the event and customer data. As soon as AWS release Transaction support for DynamoDBMapper, both
      * tables will be saved as one transaction
      */
-    public Customer persist() throws CustomerNotFoundException {
+    public void persist() throws CustomerNotFoundException {
 
         // Confirm the customer exists
         CustomerQuery cc = new CustomerQuery(customerEvent.getCustomerId(), mapper);
@@ -53,6 +53,5 @@ public class CustomerDeleteCommand {
         // Save the delete event
         mapper.save(customerEvent);
 
-        return null;
     }
 }

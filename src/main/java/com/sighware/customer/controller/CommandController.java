@@ -36,7 +36,7 @@ public class CommandController {
 
     private static final Logger LOG = Logger.getLogger(CommandController.class);
 
-    private DynamoDBMapper mapper = DynamoDBAdapter.getInstance().getDynamoDBMapper();
+    private final DynamoDBMapper mapper = DynamoDBAdapter.getInstance().getDynamoDBMapper();
 
     /**
      * Add a person customer
@@ -106,7 +106,6 @@ public class CommandController {
             Customer cust = command.rebuild();
             return ResponseEntity.ok(cust);
         } catch (CustomerNotFoundException e) {
-            LOG.info("Unable to find Customer Id " + rebuildRequest.getCustomerId() + " for this date " + rebuildRequest.getTimestamp());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -126,7 +125,6 @@ public class CommandController {
             deleteCommand.persist();
             return ResponseEntity.ok().build();
         } catch (CustomerNotFoundException e) {
-            LOG.info("Unable to find Customer Id " + customerId);
             return ResponseEntity.badRequest().build();
         }
     }

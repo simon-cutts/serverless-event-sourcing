@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,7 +22,7 @@ public class CommandControllerTest {
 
         // Check customer is persisted and has a version of 1
         assertEquals(HttpStatus.OK, resp.getStatusCode());
-        assertEquals(new Long(1), resp.getBody().getVersion());
+        assertEquals(new Long(1), Objects.requireNonNull(resp.getBody()).getVersion());
     }
 
     @Test
@@ -31,7 +32,7 @@ public class CommandControllerTest {
 
         // Check customer is persisted and has a version of 1
         assertEquals(HttpStatus.OK, resp.getStatusCode());
-        assertEquals(new Long(1), resp.getBody().getVersion());
+        assertEquals(new Long(1), Objects.requireNonNull(resp.getBody()).getVersion());
 
         // Get a rebuilt view of customer
         Customer c = resp.getBody();
@@ -41,7 +42,7 @@ public class CommandControllerTest {
 
         // Check customer is found and has a version of 1
         assertEquals(HttpStatus.OK, resp.getStatusCode());
-        assertEquals(new Long(1), resp.getBody().getVersion());
+        assertEquals(new Long(1), Objects.requireNonNull(resp.getBody()).getVersion());
 
         // Same customer but date is too early
         ZonedDateTime inThePast = ZonedDateTime.parse("2011-12-03T10:15:30+01:00");
@@ -49,7 +50,6 @@ public class CommandControllerTest {
         resp = controller.rebuild(r);
 
         assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
-
     }
 
     @Test
@@ -59,7 +59,7 @@ public class CommandControllerTest {
 
         // Check customer is persisted and has a version of 1
         assertEquals(HttpStatus.OK, resp.getStatusCode());
-        assertEquals(new Long(1), resp.getBody().getVersion());
+        assertEquals(new Long(1), Objects.requireNonNull(resp.getBody()).getVersion());
 
         // Get a rebuilt view of customer
         Customer c = resp.getBody();
@@ -67,6 +67,5 @@ public class CommandControllerTest {
 
         // Check 200 returned
         assertEquals(HttpStatus.OK, resp.getStatusCode());
-
     }
 }
