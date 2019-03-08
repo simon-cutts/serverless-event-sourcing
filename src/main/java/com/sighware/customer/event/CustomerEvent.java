@@ -48,7 +48,7 @@ public class CustomerEvent {
         this.customerId = customerId;
     }
 
-    @JsonProperty("timestamp")
+//    @JsonProperty("timestamp")
     @DynamoDBRangeKey(attributeName = "createTime")
     public String getCreateTime() {
         return createTime;

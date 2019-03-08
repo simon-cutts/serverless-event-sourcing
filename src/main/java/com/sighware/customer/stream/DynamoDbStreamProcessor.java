@@ -18,8 +18,11 @@ import java.util.Map;
 public class DynamoDbStreamProcessor implements
         RequestHandler<DynamodbEvent, String> {
 
+    private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
+    private final EventWriter writer = new EventWriter();
+
     public String handleRequest(DynamodbEvent ddbEvent, Context context) {
-        for (DynamodbStreamRecord record : ddbEvent.getRecords()){
+        for (DynamodbStreamRecord record : ddbEvent.getRecords()) {
 
             Map<String, AttributeValue> newImage = record.getDynamodb().getNewImage();
             List<Map<String, AttributeValue>> listOfMaps = new ArrayList<>();
@@ -28,8 +31,9 @@ public class DynamoDbStreamProcessor implements
             for (Item item : itemList) {
                 String json = item.toJSON();
                 System.out.println(json);
+                writer.write(BUCKET_NAME,json);
             }
         }
-        return "Successfully processed " + ddbEvent.getRecords().size() + " records.";
+        return "Ok";
     }
 }

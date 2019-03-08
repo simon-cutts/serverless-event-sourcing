@@ -1,20 +1,23 @@
 # Serverless Event Based Customer Record
 
-This application is intended as a straw man to demonstrate the benefits of an event sourced system, but without actually being a true event sourced system. It has many characteristics of event sourcing, such as commands, immutable events (everything is in fact an immutable event) and the ability to replay the event stream to a point in time to get different states of a customer.
+![Drag Racing](event-straw-2.jpg)
+
+This application depicted above is intended as a straw man to demonstrate the benefits of an event sourced system, but without actually being a true event sourced system. It has many characteristics of event sourcing, such as commands, immutable events (everything is in fact an immutable event) and the ability to replay the event stream to a point in time to get different states of a customer.
 
 The app deviates from true event sourcing in these areas:
 
 1. No separate read and write models (i.e. no [CQRS](https://martinfowler.com/bliki/CQRS.html)). The view of the customer is always up to date so events do not need to be re-played (unless you want to); consequentially, there is no eventual consistency lag.
 2. The app supports transactional concurrency, with an optimistic locking strategy
-2. Allows deletes, so that customers can be forgotten 
+2. Allows deletes, so that customers can be forgotten
 
 ### Outstanding Tasks
 
 Stuff for the next iteration:
 
-1. Issue events to downstream applications with [Amazon Kinesis](https://aws.amazon.com/kinesis/)
+1. Finish issuing events to downstream applications with [Amazon Kinesis](https://aws.amazon.com/kinesis/)
 2. Ensure the app is transactional by using [Amazon DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html), so that data updates are atomic across both the Customer and CustomerEvent table
 3. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
+4. Update guidance so that bucket name is unique
 
 ## Installation
 The customer record app is written with [Spring Boot 2 framework](https://projects.spring.io/spring-boot/). The `StreamLambdaHandler` object is the main entry point for Lambda.
