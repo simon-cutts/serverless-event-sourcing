@@ -29,6 +29,22 @@ Resources:
             Path: /{proxy+}
             Method: any
 
+  ProcessDynamoDBStream:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.sighware.customer.stream.DynamoDbStreamProcessor::handleRequest
+      Runtime: java8
+      CodeUri: build/distributions/customer-record-event-strawman.zip
+      MemorySize: 1024
+      Policies: AWSLambdaDynamoDBExecutionRole
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt EventsDynamoDBTable.StreamArn
+            BatchSize: 1
+            StartingPosition: TRIM_HORIZON
+
   CustomersDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -59,6 +75,8 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
       TableName: "CustomerEvent"
 
 Outputs:

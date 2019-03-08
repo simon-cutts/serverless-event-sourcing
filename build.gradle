@@ -16,6 +16,7 @@ dependencies {
           'org.springframework.boot:spring-boot-starter-web:2.1.1.RELEASE',
           'com.amazonaws.serverless:aws-serverless-java-container-spring:[1.1,)',
           'com.amazonaws:aws-java-sdk-dynamodb:1.11.504',
+          'com.amazonaws:aws-lambda-java-events:2.2.5',
           'io.symphonia:lambda-logging:1.0.1'
   )
   testCompile('junit:junit:4.12')
