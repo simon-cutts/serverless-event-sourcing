@@ -17,13 +17,26 @@ Stuff for the next iteration:
 1. Finish issuing events to downstream applications with [Amazon Kinesis](https://aws.amazon.com/kinesis/)
 2. Ensure the app is transactional by using [Amazon DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html), so that data updates are atomic across both the Customer and CustomerEvent table
 3. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
-4. Update guidance so that bucket name is unique
 
 ## Installation
 The customer record app is written with [Spring Boot 2 framework](https://projects.spring.io/spring-boot/). The `StreamLambdaHandler` object is the main entry point for Lambda.
 
-The application can be deployed in an AWS account using the [Serverless Application Model (SAM)](https://github.com/awslabs/serverless-application-model). The `template.yaml` file in the root folder contains the application definition
+The application can be deployed in an AWS account using the [Serverless Application Model (SAM)](https://github.com/awslabs/serverless-application-model). 
 
+The `template.yaml` file in the root folder contains the application definition. Update the bucket name in `template.yaml` file, replacing
+```
+  EventBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: "serverless-strawman-customer-event"
+```
+with
+```
+  EventBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: "<<YOUR_UNIQUE_BUCKET_NAME>>"
+```
 To build and install the customer record application you will need [AWS CLI](https://aws.amazon.com/cli/), [SAM](https://github.com/awslabs/serverless-application-model) and [Gradle](https://gradle.org/) installed on your computer.
 
 Once they have been installed, from the shell, navigate to the root folder of the app and use gradle to build a deployable zip. Exclude the tests for the moment because they depdend on DynamoDB tables and these are only built when the application is deployed into AWS
