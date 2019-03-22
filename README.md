@@ -1,14 +1,26 @@
-# Serverless Event Based Customer Record
+# Serverless Event Sourcing Customer Record
+
 
 ![Drag Racing](event-straw-2.jpg)
 
-This application depicted above is intended as a straw man to demonstrate the benefits of an event sourced system, but without actually being a true event sourced system. It has many characteristics of event sourcing, such as commands, immutable events (everything is in fact an immutable event) and the ability to replay the event stream to a point in time to get different states of a customer.
+This application depicted above is intended as a straw man to demonstrate the benefits of a light-weight, purely serverless event 
+sourcing system. Event sourcing stores every state change to the application as an event object. These event objects are stored in the sequence they were applied for the lifetime of the application.
 
-The app deviates from true event sourcing in these areas:
+This application adopts the core principle of event sourcing in that all changes to domain objects are done as a result of an event. Consequently, this straw man follows the key idioms of event sourcing: commands, immutable events, events as the system of record, the ability to replay the event stream to a point in time to get different states of a customer.
 
-1. No separate read and write models (i.e. no [CQRS](https://martinfowler.com/bliki/CQRS.html)). The view of the customer is always up to date so events do not need to be re-played (unless you want to); consequentially, there is no eventual consistency lag.
+The application perhaps deviates from a pure event sourcing pattern in these areas:
+
+1. No separate read and write models (i.e. no [CQRS](https://martinfowler.com/bliki/CQRS.html)). The view of the customer is always up to date so events do not necessarily need to be re-played; consequentially, there is no eventual consistency lag. Of course, being event sourced, events can still be replayed at anytime, if desired
 2. The app supports transactional concurrency, with an optimistic locking strategy
-2. Allows deletes, so that customers can be forgotten
+2. Allows deletes, so in accordance with [GDPR](https://gdpr-info.eu/art-17-gdpr/), customers can be forgotten
+
+### System of Record
+
+The `CustomerEvent` table stores every single event that is submitted to the system. This is the immutable system of record for the application.
+
+The `Customer` table is the materialized view of the system of record, for quick access by the application. This is not the system of record, merely a view of the system of record. 
+
+The customer can be retrieved from either the materialized view held in the `Customer` table or rebuilt directly from the event stream held in the `CustomerEvent` table  
 
 ### Outstanding Tasks
 
@@ -35,7 +47,7 @@ with
   EventBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: "<<YOUR_UNIQUE_BUCKET_NAME>>"
+      BucketName: "<YOUR UNIQUE BUCKET NAME>"
 ```
 To build and install the customer record application you will need [AWS CLI](https://aws.amazon.com/cli/), [SAM](https://github.com/awslabs/serverless-application-model) and [Gradle](https://gradle.org/) installed on your computer.
 
@@ -152,7 +164,7 @@ Get all the immutable events for a customer
 $ curl https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/query/event/{customerId}
 ```
 
-Rebuild a customer from the event stream, with an example message body
+Rebuild a customer from the event stream from a point in time
 
 ```
 $ curl -H "Content-Type: application/json" -X POST https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/command/rebuild -d '
