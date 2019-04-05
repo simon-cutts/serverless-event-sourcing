@@ -23,8 +23,8 @@ public class EventQuery {
     private static final Logger LOG = Logger.getLogger(EventQuery.class);
     private final ZonedDateTime startTime = ZonedDateTime.parse("1900-01-01T00:00:01.000Z");
     private final DynamoDBMapper mapper;
-    private ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
     private final String customerId;
+    private ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
 
     /**
      * Create an instance of EventQuery with an endTime of now

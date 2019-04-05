@@ -15,6 +15,7 @@ public class EventWriter {
 
     /**
      * Write CustomerEvent to the S3 bucket
+     *
      * @param bucket
      * @param event
      * @return

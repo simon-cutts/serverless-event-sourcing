@@ -29,8 +29,8 @@ Resources:
             Path: /{proxy+}
             Method: any
 
-  # Lambda listens to a DynamoDB stream on the EventsDynamoDBTable and writes the events
-  # to the S3 EventBucket
+  # Lambda listens to a DynamoDB stream on the EventsDynamoDBTable and writes the
+  # data to KinesisStream
   ProcessDynamoDBStream:
     Type: AWS::Serverless::Function
     Properties:
@@ -40,16 +40,40 @@ Resources:
       MemorySize: 1024
       Environment:
         Variables:
-          BUCKET_NAME: !Ref EventBucket
+          KINESIS_STREAM_NAME: !Ref KinesisStream
       Policies:
         - AWSLambdaDynamoDBExecutionRole
-        - S3CrudPolicy:
-            BucketName: !Ref EventBucket
+        - KinesisCrudPolicy:
+            StreamName: !Ref KinesisStream
       Events:
         Stream:
           Type: DynamoDB
           Properties:
             Stream: !GetAtt EventsDynamoDBTable.StreamArn
+            BatchSize: 1
+            StartingPosition: TRIM_HORIZON
+
+  # Lambda listens to KinesisStream and writes the events to the S3 EventBucket
+  ProcessKinesisStreamS3:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.sighware.customer.stream.KinesisStreamS3Processor::handleRequest
+      Runtime: java8
+      CodeUri: build/distributions/customer-record-event-strawman.zip
+      MemorySize: 1024
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref EventBucket
+      Policies:
+        - KinesisStreamReadPolicy:
+            StreamName: !Ref KinesisStream
+        - S3CrudPolicy:
+            BucketName: !Ref EventBucket
+      Events:
+        Stream:
+          Type: Kinesis
+          Properties:
+            Stream: !GetAtt KinesisStream.Arn
             BatchSize: 1
             StartingPosition: TRIM_HORIZON
 
@@ -87,8 +111,22 @@ Resources:
         StreamViewType: NEW_IMAGE
       TableName: "CustomerEvent"
 
+  KinesisStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: CustomerEventKinesisStream
+      ShardCount: 1
+
+  # HTTP/2 stream consumer please see:
+  #     https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html
+  #StreamConsumer:
+  #  Type: AWS::Kinesis::StreamConsumer
+  #  Properties:
+  #    StreamARN: !GetAtt KinesisStream.Arn
+  #    ConsumerName: "CustomerEventStreamConsumer"
+
   EventBucket:
-    Type: 'AWS::S3::Bucket'
+    Type: AWS::S3::Bucket
     Properties:
       BucketName: "serverless-strawman-customer-event"
 
@@ -98,3 +136,9 @@ Outputs:
     Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/customer'
     Export:
       Name: CustomerRecordFuncApi
+  StreamARN:
+    Description: "Stream ARN"
+    Value: !GetAtt KinesisStream.Arn
+    #  ConsumerARN:
+    #Description: "Stream consumer ARN"
+    #Value: !GetAtt StreamConsumer.ConsumerARN

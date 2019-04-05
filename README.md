@@ -22,13 +22,22 @@ The `Customer` table is the materialized view of the system of record, for quick
 
 The customer can be retrieved from either the materialized view held in the `Customer` table or rebuilt directly from the event stream held in the `CustomerEvent` table  
 
+### Event Bus
+
+Events traverse the event bus to notify downstream clients. The event bus comprises:
+
+1. A DynamoDB stream from the `CustomerEvent` table, emitting reliable, time ordered sequence of events 
+2. The `DynamoDbStreamProcessor` lambda picks data off the DynamoDB stream and reassembles it into a JSON representation of the event. This event is then written to a Kinesis stream.
+3. The `KinesisStreamS3Processor` lambda is an example of a Kinesis client, reading from the Kinesis stream. It writes the events to S3. Multiple other Lambdas could also access the same stream acting independently of each other 
+
 ### Outstanding Tasks
 
 Stuff for the next iteration:
 
-1. Finish issuing events to downstream applications with [Amazon Kinesis](https://aws.amazon.com/kinesis/)
+1. Change kinesis client to use HTTP/2 [enhanced fan-out](https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html)
 2. Ensure the app is transactional by using [Amazon DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html), so that data updates are atomic across both the Customer and CustomerEvent table
-3. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
+3. Downstream client (KinesisStreamS3Processor) is not idempotent
+4. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
 
 ## Installation
 The customer record app is written with [Spring Boot 2 framework](https://projects.spring.io/spring-boot/). The `StreamLambdaHandler` object is the main entry point for Lambda.
@@ -156,7 +165,7 @@ $ curl -H "Content-Type: application/json" -X POST https://xxxxxxx.execute-api.e
 Retrieve a customer
 
 ```
-$ curl https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/query/get/{customerId}
+$ curl https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/query/{customerId}
 ```
 Get all the immutable events for a customer
 

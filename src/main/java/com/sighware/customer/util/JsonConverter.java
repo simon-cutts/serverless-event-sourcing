@@ -19,7 +19,7 @@ public class JsonConverter {
 
     public static Object toObject(String s, Class clazz) {
         try {
-            return om.readValue(s,clazz);
+            return om.readValue(s, clazz);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -3,7 +3,6 @@ package com.sighware.customer.event;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sighware.customer.model.Customer;
 
 import java.time.ZoneOffset;
@@ -48,7 +47,7 @@ public class CustomerEvent {
         this.customerId = customerId;
     }
 
-//    @JsonProperty("timestamp")
+    //    @JsonProperty("timestamp")
     @DynamoDBRangeKey(attributeName = "createTime")
     public String getCreateTime() {
         return createTime;

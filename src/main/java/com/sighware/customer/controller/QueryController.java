@@ -38,7 +38,7 @@ public class QueryController {
      * @param customerId CustomerId to retrieve
      * @return a Customer
      */
-    @RequestMapping(path = "/get/{customerId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{customerId}", method = RequestMethod.GET)
     public ResponseEntity<Customer> getCustomer(@PathVariable("customerId") String customerId) {
 
         try {
