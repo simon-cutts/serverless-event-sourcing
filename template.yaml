@@ -8,6 +8,7 @@ Globals:
     EndpointConfiguration: REGIONAL
 
 Resources:
+  # Lambda entry point for the SpringBoot app
   CustomerRecordFunc:
     Type: AWS::Serverless::Function
     Properties:
@@ -54,6 +55,8 @@ Resources:
             StartingPosition: TRIM_HORIZON
 
   # Lambda listens to KinesisStream and writes the events to the S3 EventBucket
+  # Normally this lambda would be in a separate project as it is a client of the event stream. Only included
+  # here for illustration purposes :-)
   ProcessKinesisStreamS3:
     Type: AWS::Serverless::Function
     Properties:
@@ -73,7 +76,8 @@ Resources:
         Stream:
           Type: Kinesis
           Properties:
-            Stream: !GetAtt KinesisStream.Arn
+            #Stream: !GetAtt KinesisStream.Arn
+            Stream: !GetAtt StreamConsumer.ConsumerARN
             BatchSize: 1
             StartingPosition: TRIM_HORIZON
 
@@ -119,11 +123,11 @@ Resources:
 
   # HTTP/2 stream consumer please see:
   #     https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html
-  #StreamConsumer:
-  #  Type: AWS::Kinesis::StreamConsumer
-  #  Properties:
-  #    StreamARN: !GetAtt KinesisStream.Arn
-  #    ConsumerName: "CustomerEventStreamConsumer"
+  StreamConsumer:
+    Type: AWS::Kinesis::StreamConsumer
+    Properties:
+      StreamARN: !GetAtt KinesisStream.Arn
+      ConsumerName: "CustomerEventStreamConsumer"
 
   EventBucket:
     Type: AWS::S3::Bucket
@@ -136,9 +140,12 @@ Outputs:
     Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/customer'
     Export:
       Name: CustomerRecordFuncApi
+  EventsDynamoDBTable:
+    Description: "DynamoDB Stream ARN"
+    Value: !GetAtt EventsDynamoDBTable.StreamArn
   StreamARN:
-    Description: "Stream ARN"
+    Description: "Kinesis Stream ARN"
     Value: !GetAtt KinesisStream.Arn
-    #  ConsumerARN:
-    #Description: "Stream consumer ARN"
-    #Value: !GetAtt StreamConsumer.ConsumerARN
+  ConsumerARN:
+    Description: "Stream consumer ARN"
+    Value: !GetAtt StreamConsumer.ConsumerARN

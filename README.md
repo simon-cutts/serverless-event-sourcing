@@ -6,7 +6,9 @@
 This application depicted above is intended as a straw man to demonstrate the benefits of a light-weight, purely serverless event 
 sourcing system. Event sourcing stores every state change to the application as an event object. These event objects are stored in the sequence they were applied for the lifetime of the application.
 
-This application adopts the core principle of event sourcing in that all changes to domain objects are done as a result of an event. Consequently, this straw man follows the key idioms of event sourcing: commands, immutable events, events as the system of record, the ability to replay the event stream to a point in time to get different states of a customer.
+Serverless was chosen to simplify the infrastructure with minimal dev ops; but, just as importantly, to use native cloud services rather than write non-trivial application code. Why hand roll your own an event stream, when you can rent a world class stream like Kinesis instead?
+
+This application adopts the core principle of event sourcing in that all changes to domain objects are done as a result of an event. Consequently, this straw man follows the key idioms of event sourcing: commands, immutable events, event streams, events as the system of record and the ability to replay the event stream to a point in time to get different states of a customer.
 
 The application perhaps deviates from a pure event sourcing pattern in these areas:
 
@@ -22,22 +24,21 @@ The `Customer` table is the materialized view of the system of record, for quick
 
 The customer can be retrieved from either the materialized view held in the `Customer` table or rebuilt directly from the event stream held in the `CustomerEvent` table  
 
-### Event Bus
+### Event Stream
 
-Events traverse the event bus to notify downstream clients. The event bus comprises:
+Events traverse the event stream to notify downstream clients. The event stream comprises:
 
 1. A DynamoDB stream from the `CustomerEvent` table, emitting reliable, time ordered sequence of events 
 2. The `DynamoDbStreamProcessor` lambda picks data off the DynamoDB stream and reassembles it into a JSON representation of the event. This event is then written to a Kinesis stream.
-3. The `KinesisStreamS3Processor` lambda is an example of a Kinesis client, reading from the Kinesis stream. It writes the events to S3. Multiple other Lambdas could also access the same stream acting independently of each other 
+3. The `KinesisStreamS3Processor` lambda is an example of a HTTP/2 Kinesis client using [enhanced fan-out](https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html) to read from the stream. It writes the events to S3. Multiple other enhanced fan-out Lambdas could also access the same stream, acting independently of each other 
 
 ### Outstanding Tasks
 
 Stuff for the next iteration:
 
-1. Change kinesis client to use HTTP/2 [enhanced fan-out](https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html)
-2. Ensure the app is transactional by using [Amazon DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html), so that data updates are atomic across both the Customer and CustomerEvent table
-3. Downstream client (KinesisStreamS3Processor) is not idempotent
-4. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
+1. Ensure the app is transactional by using [Amazon DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html), so that data updates are atomic across both the Customer and CustomerEvent table
+2. Downstream client (KinesisStreamS3Processor) is not idempotent
+3. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
 
 ## Installation
 The customer record app is written with [Spring Boot 2 framework](https://projects.spring.io/spring-boot/). The `StreamLambdaHandler` object is the main entry point for Lambda.
