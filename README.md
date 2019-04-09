@@ -29,8 +29,9 @@ The customer can be retrieved from either the materialized view held in the `Cus
 Events traverse the event stream to notify downstream clients. The event stream comprises:
 
 1. A DynamoDB stream from the `CustomerEvent` table, emitting reliable, time ordered sequence of events 
-2. The `DynamoDbStreamProcessor` lambda picks data off the DynamoDB stream and reassembles it into a JSON representation of the event. This event is then written to a Kinesis stream.
-3. The `KinesisStreamS3Processor` lambda is an example of a HTTP/2 Kinesis client using [enhanced fan-out](https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html) to read from the stream. It writes the events to S3. Multiple other enhanced fan-out Lambdas could also access the same stream, acting independently of each other 
+2. The `DynamoDbStreamProcessor` lambda picks data off the DynamoDB stream and reassembles it into a JSON representation of the event. This event is then written to the kinesis stream`CustomerEventKinesisStream`.
+3. A Kinesis `CustomerEventKinesisStream` stream maintaining the same time ordered sequence of events that can be fanned out to multiple interested clients
+4. The `KinesisStreamS3Processor` lambda is an example of a HTTP/2 Kinesis client using [enhanced fan-out](https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html) to read from the stream. It writes the events to S3. Multiple other enhanced fan-out Lambdas could also access the same stream, acting independently of each other 
 
 ### Outstanding Tasks
 
