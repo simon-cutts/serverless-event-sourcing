@@ -46,7 +46,7 @@ The customer record app is written with [Spring Boot 2 framework](https://projec
 
 The application can be deployed in an AWS account using the [Serverless Application Model (SAM)](https://github.com/awslabs/serverless-application-model). 
 
-The `template.yaml` file in the root folder contains the application definition. Update the bucket name in `template.yaml` file, replacing
+The example `KinesisStreamS3Processor` lambda client needs an S3 bucket created. The `template.yaml` file in the root folder contains the application definition. Once you've created the bucket, update the bucket name in `template.yaml` file, replacing
 ```
   EventBucket:
     Type: 'AWS::S3::Bucket'
@@ -69,7 +69,7 @@ $ gradle clean build -x test
 
 This command should generate a `customer-record.zip` in the `build/distributions` folder. Now that we have generated the zip file, we can use SAM to package the template for deployment. 
 
-You will need an S3 bucket to store the artifacts for deployment. Once you have created the S3 bucket, run the following command from the app root folder:
+You will need a second S3 bucket to store the artifacts for deployment. Once you have created the seconds S3 bucket, run the following command from the app root folder:
 
 ```
 $ sam package --output-template-file output-template.yaml --s3-bucket <YOUR S3 BUCKET NAME>
