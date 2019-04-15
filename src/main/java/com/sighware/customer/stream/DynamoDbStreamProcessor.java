@@ -31,6 +31,7 @@ public class DynamoDbStreamProcessor implements
 
     public String handleRequest(DynamodbEvent ddbEvent, Context context) {
 
+        String sequence = null;
         for (DynamodbStreamRecord record : ddbEvent.getRecords()) {
 
             // Only process a new image
@@ -50,8 +51,17 @@ public class DynamoDbStreamProcessor implements
                     // Now write customer event to kinesis stream
                     CustomerEvent event = (CustomerEvent) JsonConverter.toObject(json, CustomerEvent.class);
                     ByteBuffer data = ByteBuffer.wrap(json.getBytes(StandardCharsets.UTF_8));
-                    PutRecordResult r = kinesis.putRecord(KINESIS_STREAM_NAME, data,
-                            event.getCustomerId() + "-" + event.getCreateTime());
+
+                    // Ensure the records are written in sequence order
+                    if (sequence == null) {
+                        PutRecordResult r = kinesis.putRecord(KINESIS_STREAM_NAME, data,
+                                event.getCustomerId() + "-" + event.getCreateTime());
+                        sequence = r.getSequenceNumber();
+                    } else {
+                        PutRecordResult r = kinesis.putRecord(KINESIS_STREAM_NAME, data,
+                                event.getCustomerId() + "-" + event.getCreateTime(), sequence);
+                        sequence = r.getSequenceNumber();
+                    }
                 }
             }
         }
