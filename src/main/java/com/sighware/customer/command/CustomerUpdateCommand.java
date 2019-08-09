@@ -48,7 +48,7 @@ public class CustomerUpdateCommand {
         customerEvent.getData().setVersion(version + 1);
 
         Map<String, AttributeValue> eav = new HashMap<>();
-        eav.put(":version", new AttributeValue().withL(version));
+        eav.put(":version", new AttributeValue().withS("" + version));
         DynamoDBTransactionWriteExpression exp = new DynamoDBTransactionWriteExpression().withConditionExpression("").withExpressionAttributeValues(eav);
 
         TransactionWriteRequest writeRequest = new TransactionWriteRequest();
