@@ -22,7 +22,7 @@ public class CustomerCreateCommand {
     }
 
     /**
-     * Persist the event and customer data. Uses AWS  Transaction support for DynamoDBMapper, so both
+     * Persist the event and customer data. Uses AWS Transaction support for DynamoDBMapper, so both
      * tables are saved as one transaction
      */
     public Customer persist() {

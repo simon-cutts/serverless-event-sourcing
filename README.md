@@ -1,12 +1,11 @@
 # Serverless Event Sourcing Customer Record
 
 
-![Drag Racing](event-straw-2.jpg)
+![Drag Racing](event-straw.png)
 
-This application depicted above is intended as a straw man to demonstrate the benefits of a light-weight, purely serverless event 
-sourcing system. Event sourcing stores every state change to the application as an event object. These event objects are stored in the sequence they were applied for the lifetime of the application.
+This application depicted above is intended as a straw man to demonstrate the benefits of a light-weight, purely serverless event sourcing system. Event sourcing stores every state change to the application as an event object. These event objects are stored in the sequence they were applied for the lifetime of the application.
 
-Serverless was chosen to simplify the infrastructure with minimal dev ops; but, just as importantly, to use native cloud services rather than rely non-trivial application code. 
+Serverless was chosen to simplify the infrastructure with minimal dev ops; but, just as importantly, to use native cloud services rather than rely non-trivial specialist event sourced application frameworks. 
 
 This application adopts the core principle of event sourcing in that all changes to domain objects are done as a result of an event. Consequently, this straw man follows the key idioms of event sourcing: commands, immutable events, event streams, events as the system of record and the ability to replay the event stream to a point in time to get different states of a customer.
 
@@ -22,7 +21,9 @@ The `CustomerEvent` table stores every single event that is submitted to the sys
 
 The `Customer` table is the materialized view of the system of record, for quick access by the application. This is not the system of record, merely a view of the system of record. 
 
-The customer can be retrieved from either the materialized view held in the `Customer` table or rebuilt directly from the event stream held in the `CustomerEvent` table  
+The customer can be retrieved from either the materialized view held in the `Customer` table or rebuilt directly from the event stream held in the `CustomerEvent` table
+
+Both the `CustomerEvent` and `Customer` table are persisted in one atomic transaction, with [Amazon DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html), so that data updates are always consistent across both tables  
 
 ### Event Stream
 
@@ -37,16 +38,15 @@ Events traverse the event stream to notify downstream clients. The event stream 
 
 Stuff for the next iteration:
 
-1. Plug in the newly released [Amazon DynamoDB Transactions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html), so that data updates are atomic across both the Customer and CustomerEvent table
-2. Downstream client (KinesisStreamS3Processor) is not idempotent
-3. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
+1. Downstream client (KinesisStreamS3Processor) is not idempotent
+2. Consider rewriting in Node.js with TypeScript - the cold start times are a killer! 8 to 10 seconds
 
 ## Installation
 The customer record app is written with [Spring Boot 2 framework](https://projects.spring.io/spring-boot/). The `StreamLambdaHandler` object is the main entry point for Lambda.
 
 The application can be deployed in an AWS account using the [Serverless Application Model (SAM)](https://github.com/awslabs/serverless-application-model). 
 
-The example `KinesisStreamS3Processor` lambda client needs an S3 bucket created. The `template.yaml` file in the root folder contains the application definition. Once you've created the bucket, update the bucket name in `template.yaml` file, replacing
+The example `KinesisStreamS3Processor` lambda client needs an S3 bucket created to store a copy of all events sent to the application. The `template.yaml` file in the root folder contains the application definition. Once you've created the bucket, update the bucket name in `template.yaml` file, replacing
 ```
   EventBucket:
     Type: 'AWS::S3::Bucket'
@@ -58,7 +58,7 @@ with
   EventBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: "<YOUR UNIQUE BUCKET NAME>"
+      BucketName: "<YOUR EVENT BUCKET NAME>"
 ```
 To build and install the customer record application you will need [AWS CLI](https://aws.amazon.com/cli/), [SAM](https://github.com/awslabs/serverless-application-model) and [Gradle](https://gradle.org/) installed on your computer.
 
@@ -69,10 +69,10 @@ $ gradle clean build -x test
 
 This command should generate a `customer-record.zip` in the `build/distributions` folder. Now that we have generated the zip file, we can use SAM to package the template for deployment. 
 
-You will need a second S3 bucket to store the artifacts for deployment. Once you have created the seconds S3 bucket, run the following command from the app root folder:
+You will need a deployment S3 bucket to store the artifacts for deployment. Once you have created the deployment S3 bucket, run the following command from the app root folder:
 
 ```
-$ sam package --output-template-file output-template.yaml --s3-bucket <YOUR S3 BUCKET NAME>
+$ sam package --output-template-file output-template.yaml --s3-bucket <YOUR DEPLOYMENT S3 BUCKET NAME>
 
 Uploading to xxxxxxxxxxxxxxxxxxxxxxxxxx  6464692 / 6464692.0  (100.00%)
 Successfully packaged artifacts and wrote output template to file output-template.yaml.

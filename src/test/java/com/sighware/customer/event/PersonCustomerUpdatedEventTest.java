@@ -35,6 +35,7 @@ public class PersonCustomerUpdatedEventTest {
         PersonCustomer cust = adapter.getDynamoDBMapper().load(PersonCustomer.class, updateCust.getCustomerId());
         String result = new ObjectMapper().writeValueAsString(cust);
 
+//        System.out.println(result);
         // Confirm version is now 2
         Assert.assertTrue(result.startsWith("{\"customerId\":\"" + cust.getCustomerId()
                 + "\",\"customerName\":{\"title\":\"Mr\",\"foreNames\":\"Bill\",\"surname\":\"Glyn Dŵr\"}"));

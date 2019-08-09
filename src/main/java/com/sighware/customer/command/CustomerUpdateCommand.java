@@ -32,8 +32,8 @@ public class CustomerUpdateCommand {
     }
 
     /**
-     * Persist the event and customer data. As soon as AWS release Transaction support for DynamoDBMapper, both
-     * tables will be saved as one transaction
+     * Persist the event and customer data. Uses AWS Transaction support for DynamoDBMapper, so both
+     * tables are saved as one transaction
      */
     public Customer persist() throws CustomerNotFoundException {
 
@@ -42,18 +42,18 @@ public class CustomerUpdateCommand {
         // Confirm customer exists
         CustomerQuery cc = new CustomerQuery(customerId, mapper);
         Customer c = cc.get();
-        Long version = c.getVersion();
 
         // increment version
-        customerEvent.getData().setVersion(version + 1);
+        customerEvent.getData().setVersion(c.getVersion() + 1);
 
-        Map<String, AttributeValue> eav = new HashMap<>();
-        eav.put(":version", new AttributeValue().withS("" + version));
-        DynamoDBTransactionWriteExpression exp = new DynamoDBTransactionWriteExpression().withConditionExpression("").withExpressionAttributeValues(eav);
+
+        DynamoDBTransactionWriteExpression exp = new DynamoDBTransactionWriteExpression()
+                .withConditionExpression("attribute_exists(version)");
 
         TransactionWriteRequest writeRequest = new TransactionWriteRequest();
         writeRequest.addUpdate(customerEvent.getData(),exp);
         writeRequest.addPut(customerEvent);
+        mapper.transactionWrite(writeRequest);
 
         return customerEvent.getData();
     }
