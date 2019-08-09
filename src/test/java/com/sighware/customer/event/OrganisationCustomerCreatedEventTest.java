@@ -27,6 +27,7 @@ public class OrganisationCustomerCreatedEventTest {
         OrganisationCustomer cust = adapter.getDynamoDBMapper().load(OrganisationCustomer.class, customer.getCustomerId());
         String result = new ObjectMapper().writeValueAsString(cust);
 
+//        System.out.println(result);
         Assert.assertTrue(result.startsWith("{\"customerId\":\"" + customer.getCustomerId() + "\",\"organisationName\":\"My Organisation\""));
         Assert.assertTrue(result.endsWith("\"addressLine2\":\"addressLine2\",\"addressLine3\":\"addressLine3\",\"postalCode\":\"SA14FR\"}},\"version\":1}"));
     }

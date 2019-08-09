@@ -1,0 +1,57 @@
+Operational Notes
+=================
+
+Do not use!
+-----------
+
+sam validate -t
+
+gradle clean build -x test
+
+gradle clean build
+
+aws kinesis describe-stream --stream-name CustomerEventKinesisStream
+
+
+sam package --output-template-file output-template.yaml --s3-bucket customer-record ; sam deploy --template-file output-template.yaml --stack-name cust-record-new --capabilities CAPABILITY_IAM
+
+
+aws cloudformation describe-stacks --stack-name cust-record-new
+
+aws cloudformation describe-stack-events --stack-name cust-record-new | head -n 100
+
+aws cloudformation delete-stack --stack-name cust-record-new
+
+curl -s https://je7nz2n52k.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/query/alive
+
+curl https://je7nz2n52k.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/query/get/c5ae5538-7f75-4dca-bc01-e92e011626fa
+
+curl -H "Content-Type: application/json" -X POST https://je7nz2n52k.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/command/createPerson -d '
+{
+    "customerName": {
+        "title": "MR",
+        "foreNames": "Test Forename",
+        "surname": "Test surname"
+    },
+
+    "customerAddress":{
+        "addressType":"STRUCTURED",
+        "address": {
+             "addressLine1": "test line 1",
+             "addressLine2": "test line 2",
+             "addressLine3": "test line 3",
+             "postalCode": "SA66DD"
+        }
+    }
+}'
+
+curl -H "Content-Type: application/json" -X POST https://je7nz2n52k.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/command/rebuild -d '
+{"customerId":"c5ae5538-7f75-4dca-bc01-e92e011626fa","timestamp":"2019-03-03T15:30:16.481Z"}
+'
+
+curl -H "Content-Type: application/json" -X POST https://je7nz2n52k.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/command/delete/c5ae5538-7f75-4dca-bc01-e92e011626fa
+
+// Striaght up? Its an normal app, with a bit of audit log/history table/evidential store, dressed up as an event sourced system. Question is, does it give us
+enough of benefits of events, but without some of the hassel? ITs a transiton architecture: a stepping stone, to a final destination. What does
+that destination look like? Possible different destinations. Is it eh best start? Probaly  not, but its a start and we can refine the solition
+as it goes
