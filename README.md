@@ -1,4 +1,4 @@
-# Serverless Event Sourcing Customer Record
+# Serverless Event Sourcing
 
 
 ![Drag Racing](event-straw.png)
