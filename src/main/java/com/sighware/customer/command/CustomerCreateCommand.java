@@ -1,6 +1,7 @@
 package com.sighware.customer.command;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
 import com.sighware.customer.event.CustomerEvent;
 import com.sighware.customer.model.Customer;
 
@@ -21,19 +22,16 @@ public class CustomerCreateCommand {
     }
 
     /**
-     * Persist the event and customer data. As soon as AWS release Transaction support for DynamoDBMapper, both
-     * tables will be saved as one transaction
+     * Persist the event and customer data. Uses AWS  Transaction support for DynamoDBMapper, so both
+     * tables are saved as one transaction
      */
     public Customer persist() {
+        customerEvent.getData().setVersion(new Long(1));
 
-        // TODO: Add transaction support when DynamoDBMapper supports the new transaction API
-
-        // save the entity first, this is important because then its version number then gets populated
-        // for the event
-        mapper.save(customerEvent.getData());
-
-        // Save the event, with a version number of the customer that corresponds to customer entity
-        mapper.save(customerEvent);
+        TransactionWriteRequest writeRequest = new TransactionWriteRequest();
+        writeRequest.addPut(customerEvent.getData());
+        writeRequest.addPut(customerEvent);
+        mapper.transactionWrite(writeRequest);
 
         return customerEvent.getData();
     }

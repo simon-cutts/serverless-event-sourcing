@@ -1,6 +1,7 @@
 package com.sighware.customer.command;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
 import com.sighware.customer.error.CustomerNotFoundException;
 import com.sighware.customer.event.CustomerEvent;
 import com.sighware.customer.model.Customer;
@@ -29,8 +30,8 @@ public class CustomerDeleteCommand {
     }
 
     /**
-     * Persist the event and customer data. As soon as AWS release Transaction support for DynamoDBMapper, both
-     * tables will be saved as one transaction
+     * Persist the event and customer data. Uses Transaction support for DynamoDBMapper, so both
+     * tables will be modified as one transaction
      */
     public void persist() throws CustomerNotFoundException {
 
@@ -38,20 +39,19 @@ public class CustomerDeleteCommand {
         CustomerQuery cc = new CustomerQuery(customerEvent.getCustomerId(), mapper);
         Customer customer = cc.get();
 
-        // TODO: Add transaction support when DynamoDBMapper supports the new transaction API
-
-        // Delete the customer
-        mapper.delete(customer);
+        TransactionWriteRequest writeRequest = new TransactionWriteRequest();
+        writeRequest.addDelete(customer);
 
         // Now get the events to delete
         EventQuery query = new EventQuery(mapper, ZonedDateTime.now(ZoneOffset.UTC), customerEvent.getCustomerId());
         List<CustomerEvent> events = query.get();
         for (CustomerEvent event : events) {
-            mapper.delete(event);
+            writeRequest.addDelete(event);
         }
 
         // Save the delete event
-        mapper.save(customerEvent);
+        writeRequest.addPut(customerEvent);
 
+        mapper.transactionWrite(writeRequest);
     }
 }

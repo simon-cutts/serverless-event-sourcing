@@ -15,7 +15,7 @@ dependencies {
   compile (
           'org.springframework.boot:spring-boot-starter-web:2.1.1.RELEASE',
           'com.amazonaws.serverless:aws-serverless-java-container-spring:[1.1,)',
-          'com.amazonaws:aws-java-sdk-dynamodb:1.11.504',
+          'com.amazonaws:aws-java-sdk-dynamodb:1.11.543',
           'com.amazonaws:aws-lambda-java-events:2.2.5',
           'com.amazonaws:amazon-kinesis-client:1.9.3',
           'com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.9.8',
@@ -36,3 +36,5 @@ task buildZip(type: Zip) {
 }
 
 build.dependsOn buildZip
+
+// AWS_ACCESS_KEY = 'BBF3A5D0XJTM6V2O0MHQ'

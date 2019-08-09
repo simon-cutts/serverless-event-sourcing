@@ -1,11 +1,17 @@
 package com.sighware.customer.command;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTransactionWriteExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.sighware.customer.error.CustomerNotFoundException;
 import com.sighware.customer.event.CustomerEvent;
 import com.sighware.customer.model.Customer;
 import com.sighware.customer.query.CustomerQuery;
 import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Customer update command to handle the persistence of both the Event and its payload.
@@ -35,16 +41,19 @@ public class CustomerUpdateCommand {
 
         // Confirm customer exists
         CustomerQuery cc = new CustomerQuery(customerId, mapper);
-        cc.get();
+        Customer c = cc.get();
+        Long version = c.getVersion();
 
-        // TODO: Add transaction support when DynamoDBMapper supports the new transaction API
+        // increment version
+        customerEvent.getData().setVersion(version + 1);
 
-        // save the entity first, this is important because its version number then gets populated
-        // for the event
-        mapper.save(customerEvent.getData());
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":version", new AttributeValue().withL(version));
+        DynamoDBTransactionWriteExpression exp = new DynamoDBTransactionWriteExpression().withConditionExpression("").withExpressionAttributeValues(eav);
 
-        // Save the event, with a version number of the customer that corresponds to customer entity
-        mapper.save(customerEvent);
+        TransactionWriteRequest writeRequest = new TransactionWriteRequest();
+        writeRequest.addUpdate(customerEvent.getData(),exp);
+        writeRequest.addPut(customerEvent);
 
         return customerEvent.getData();
     }
