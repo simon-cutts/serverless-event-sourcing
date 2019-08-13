@@ -188,7 +188,7 @@ Delete a customer and all their events, leaving a only a delete event for the cu
 $ curl -H "Content-Type: application/json" -X POST https://xxxxxxx.execute-api.eu-west-2.amazonaws.com/Prod/customer/v1/command/delete/{customerId}
 ```
 
-Execute gradle again to confirm the local unit tests now execute successfully
+Execute gradle again to confirm the tests now execute successfully
 
 ```
 $ gradle clean build
