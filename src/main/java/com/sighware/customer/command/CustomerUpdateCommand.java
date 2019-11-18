@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTransactionWriteEx
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.sighware.customer.error.CustomerNotFoundException;
+import com.sighware.customer.error.CustomerUpdateException;
 import com.sighware.customer.event.CustomerEvent;
 import com.sighware.customer.model.Customer;
 import com.sighware.customer.query.CustomerQuery;
@@ -35,26 +36,18 @@ public class CustomerUpdateCommand {
      * Persist the event and customer data. Uses AWS Transaction support for DynamoDBMapper, so both
      * tables are saved as one transaction
      */
-    public Customer persist() throws CustomerNotFoundException {
+    public Customer persist() throws CustomerUpdateException {
 
-        String customerId = customerEvent.getData().getCustomerId();
-
-        // Confirm customer exists
-        CustomerQuery cc = new CustomerQuery(customerId, mapper);
-        Customer c = cc.get();
-
-        // increment version
-        customerEvent.getData().setVersion(c.getVersion() + 1);
-
-
-        DynamoDBTransactionWriteExpression exp = new DynamoDBTransactionWriteExpression()
-                .withConditionExpression("attribute_exists(version)");
-
-        TransactionWriteRequest writeRequest = new TransactionWriteRequest();
-        writeRequest.addUpdate(customerEvent.getData(),exp);
-        writeRequest.addPut(customerEvent);
-        mapper.transactionWrite(writeRequest);
+        try {
+            TransactionWriteRequest writeRequest = new TransactionWriteRequest();
+            writeRequest.addPut(customerEvent.getData());
+            writeRequest.addPut(customerEvent);
+            mapper.transactionWrite(writeRequest);
+        } catch (Exception e) {
+            throw new CustomerUpdateException(e.getMessage(),e);
+        }
 
         return customerEvent.getData();
+
     }
 }

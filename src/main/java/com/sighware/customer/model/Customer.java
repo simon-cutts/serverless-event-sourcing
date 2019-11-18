@@ -105,7 +105,7 @@ public class Customer {
         this.customerAddress = customerAddress;
     }
 
-//    @DynamoDBVersionAttribute
+    @DynamoDBVersionAttribute
     public Long getVersion() {
         return version;
     }

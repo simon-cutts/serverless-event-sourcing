@@ -2,6 +2,7 @@ package com.sighware.customer.command;
 
 
 import com.sighware.customer.error.CustomerNotFoundException;
+import com.sighware.customer.error.CustomerUpdateException;
 import com.sighware.customer.event.*;
 import com.sighware.customer.model.Customer;
 import com.sighware.customer.model.CustomerBuilder;
@@ -28,7 +29,7 @@ public class CustomerRebuildCommandTest {
     private static String eventCreateTime;
 
     @BeforeClass
-    public static void setUp() throws CustomerNotFoundException {
+    public static void setUp() throws CustomerNotFoundException, CustomerUpdateException {
         // create the customer object for post
         PersonCustomer customer = CustomerBuilder.buildPerson();
 
@@ -79,7 +80,7 @@ public class CustomerRebuildCommandTest {
         Customer c = rebuild.rebuild();
         assertEquals("Bill", c.getCustomerName().getForeNames());
         assertEquals("Bong", c.getCustomerName().getSurname());
-        assertEquals(new Long("3"), c.getVersion());
+        assertEquals(new Long("2"), c.getVersion());
     }
 
     @Test
@@ -92,7 +93,7 @@ public class CustomerRebuildCommandTest {
         Customer c = rebuild.rebuild();
         assertEquals("Bill", c.getCustomerName().getForeNames());
         assertEquals("Glyn Dŵr", c.getCustomerName().getSurname());
-        assertEquals(new Long("2"), c.getVersion());
+        assertEquals(new Long("1"), c.getVersion());
     }
 
     @Test
@@ -103,7 +104,7 @@ public class CustomerRebuildCommandTest {
                 adapter.getDynamoDBMapper());
         Customer c = rebuild.rebuild();
         assertEquals("333333333333333", c.getOrganisationName());
-        assertEquals(new Long("3"), c.getVersion());
+        assertEquals(new Long("2"), c.getVersion());
     }
 
     @Test
@@ -115,7 +116,7 @@ public class CustomerRebuildCommandTest {
                 organisationCustomer.getCustomerId(), zonedDateTime);
         Customer c = rebuild.rebuild();
         assertEquals("2222222222222222", c.getOrganisationName());
-        assertEquals(new Long("2"), c.getVersion());
+        assertEquals(new Long("1"), c.getVersion());
     }
 
     @Test

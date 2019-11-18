@@ -26,7 +26,6 @@ public class CustomerCreateCommand {
      * tables are saved as one transaction
      */
     public Customer persist() {
-        customerEvent.getData().setVersion(new Long(1));
 
         TransactionWriteRequest writeRequest = new TransactionWriteRequest();
         writeRequest.addPut(customerEvent.getData());
