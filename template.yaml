@@ -85,35 +85,45 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: "customerId"
-          AttributeType: "S"
+        - AttributeName: customerId
+          AttributeType: S
       KeySchema:
-        - AttributeName: "customerId"
-          KeyType: "HASH"
+        - AttributeName: customerId
+          KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: "5"
-        WriteCapacityUnits: "5"
-      TableName: "Customer"
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: Customer
 
   EventsDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: "customerId"
-          AttributeType: "S"
-        - AttributeName: "createTime"
-          AttributeType: "S"
+        - AttributeName: customerId
+          AttributeType: S
+        - AttributeName: createTime
+          AttributeType: S
+      GlobalSecondaryIndexes:
+        - IndexName: CreateTimeIdx
+          KeySchema:
+            - AttributeName: createTime
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
       KeySchema:
-        - AttributeName: "customerId"
-          KeyType: "HASH"
-        - AttributeName: "createTime"
-          KeyType: "RANGE"
+        - AttributeName: customerId
+          KeyType: HASH
+        - AttributeName: createTime
+          KeyType: RANGE
       ProvisionedThroughput:
-        ReadCapacityUnits: "5"
-        WriteCapacityUnits: "5"
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
       StreamSpecification:
         StreamViewType: NEW_IMAGE
-      TableName: "CustomerEvent"
+      TableName: CustomerEvent
 
   KinesisStream:
     Type: AWS::Kinesis::Stream
@@ -127,12 +137,12 @@ Resources:
     Type: AWS::Kinesis::StreamConsumer
     Properties:
       StreamARN: !GetAtt KinesisStream.Arn
-      ConsumerName: "CustomerEventStreamConsumer"
+      ConsumerName: CustomerEventStreamConsumer
 
   EventBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "serverless-strawman-customer-event"
+      BucketName: serverless-strawman-customer-event
 
 Outputs:
   CustomerRecordFuncApi:
