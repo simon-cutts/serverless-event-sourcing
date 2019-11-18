@@ -14,7 +14,7 @@ Resources:
     Properties:
       Handler: com.sighware.customer.StreamLambdaHandler::handleRequest
       Runtime: java8
-      CodeUri: build/distributions/customer-record-event-strawman.zip
+      CodeUri: build/distributions/serverless-event-sourcing.zip
       MemorySize: 1024
       Policies:
         - AWSLambdaBasicExecutionRole
@@ -37,7 +37,7 @@ Resources:
     Properties:
       Handler: com.sighware.customer.stream.DynamoDbStreamProcessor::handleRequest
       Runtime: java8
-      CodeUri: build/distributions/customer-record-event-strawman.zip
+      CodeUri: build/distributions/serverless-event-sourcing.zip
       MemorySize: 1024
       Environment:
         Variables:
@@ -62,7 +62,7 @@ Resources:
     Properties:
       Handler: com.sighware.customer.stream.KinesisStreamS3Processor::handleRequest
       Runtime: java8
-      CodeUri: build/distributions/customer-record-event-strawman.zip
+      CodeUri: build/distributions/serverless-event-sourcing.zip
       MemorySize: 1024
       Environment:
         Variables:
@@ -141,7 +141,7 @@ Outputs:
     Export:
       Name: CustomerRecordFuncApi
   EventsDynamoDBTable:
-    Description: "DynamoDB Stream ARN"
+    Description: "DynamoDB Events table"
     Value: !GetAtt EventsDynamoDBTable.StreamArn
   StreamARN:
     Description: "Kinesis Stream ARN"
@@ -149,3 +149,4 @@ Outputs:
   ConsumerARN:
     Description: "Stream consumer ARN"
     Value: !GetAtt StreamConsumer.ConsumerARN
+

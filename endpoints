@@ -4,7 +4,7 @@ Operational Notes
 Do not use!
 -----------
 
-sam validate -t
+sam validate -t template.yaml
 
 gradle clean build -x test
 
